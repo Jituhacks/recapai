@@ -1,0 +1,35 @@
+﻿# Virtual Environment
+venv/
+env/
+.venv/
+
+# Python Cache & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Local Environment Variables & Secrets
+.env
+.env.local
+*.key
+*.token
+
+# Uploaded Files & Temporary Processing Artifacts
+uploads/*
+!uploads/.gitkeep
+audio/*
+!audio/.gitkeep
+temp/
+*.tmp
+
+# SQLite Database Files
+*.db
+*.sqlite3
+*.db-journal
+
+# Operating System & IDE Artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

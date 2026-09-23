@@ -1,0 +1,434 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infosys Springboard — AI-Powered Meeting Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dark-theme">
+    <div class="app-layout">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="header-container">
+                <div class="brand-section">
+                    <div class="brand-logo">
+                        <span class="logo-icon">⚡</span>
+                        <div class="logo-text">
+                            <span class="brand-title">INFOSYS SPRINGBOARD</span>
+                            <span class="brand-subtitle">AI-Powered Meeting & Career Intelligence Platform</span>
+                        </div>
+                    </div>
+                    <div class="milestone-badge">
+                        <span class="badge-dot"></span>
+                        <span>Milestones 1 & 2 • Complete Pipeline</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="tech-stack-pills">
+                        <span class="pill-tech">FFmpeg 16kHz</span>
+                        <span class="pill-tech">Whisper STT</span>
+                        <span class="pill-tech">LLM Intelligence</span>
+                        <span class="pill-tech">SQLite DB</span>
+                    </div>
+                    <button type="button" class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Theme">
+                        <span class="theme-icon" id="themeIcon">☀️</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-container">
+            <!-- LEFT PANEL: MEDIA UPLOAD & PIPELINE CONTROL -->
+            <section class="card upload-card">
+                <div class="card-header">
+                    <div class="header-icon-box">📁</div>
+                    <div>
+                        <h2>Meeting Recording</h2>
+                        <p class="section-desc">Upload audio/video meeting or load demo recording</p>
+                    </div>
+                </div>
+
+                <!-- SAMPLE MEDIA SELECTOR -->
+                <div class="sample-loader-box" id="sampleLoaderBox">
+                    <div class="sample-info-row">
+                        <span class="sample-label">💡 Demo Recording Available:</span>
+                        <span class="sample-filename" id="sampleFilename">AI_Explained_5Min.mp4</span>
+                    </div>
+                    <div class="sample-btn-group">
+                        <button type="button" class="btn-secondary btn-sm" id="loadSampleBtn">
+                            <span>▶️</span> Load Demo Recording
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DRAG & DROP UPLOAD ZONE -->
+                <div class="drop-zone" id="dropZone">
+                    <input type="file" id="fileInput" accept=".mp4,.mov,.avi,.mkv,.webm,.mp3,.wav,.m4a,.ogg,.flac,.aac" class="file-input-hidden">
+                    <div class="drop-zone-content" id="dropZoneContent">
+                        <div class="upload-icon-anim">
+                            <span class="upload-icon">☁️</span>
+                        </div>
+                        <p class="drop-title">Drag & drop meeting recording here</p>
+                        <p class="drop-sub">Supported formats: <strong>MP4, MOV, AVI, MKV, WebM, MP3, WAV, M4A</strong> (Max: 250 MB)</p>
+                        <button type="button" class="btn-browse" id="browseBtn">
+                            <span>📂</span> Browse Local Files
+                        </button>
+                    </div>
+
+                    <!-- SELECTED FILE DETAILS -->
+                    <div class="file-preview-details hidden" id="filePreviewDetails">
+                        <div class="file-icon-box" id="fileTypeIcon">🎬</div>
+                        <div class="file-meta">
+                            <span class="file-name" id="previewFileName">video.mp4</span>
+                            <span class="file-size" id="previewFileSize">0.00 MB</span>
+                        </div>
+                        <button type="button" class="btn-remove-file" id="removeFileBtn" title="Remove file">&times;</button>
+                    </div>
+                </div>
+
+                <!-- MEDIA PLAYER PREVIEW -->
+                <div class="video-preview-wrapper hidden" id="videoPreviewWrapper">
+                    <div class="player-header">
+                        <span class="player-title" id="playerTitle">Media Preview</span>
+                        <span class="sync-badge">🔴 Synced to Transcript</span>
+                    </div>
+                    <video id="videoPreviewPlayer" controls preload="metadata" class="media-player"></video>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="action-buttons-group">
+                    <button type="button" class="btn-primary btn-glow" id="processMeetingBtn" disabled>
+                        <span class="btn-icon">⚡</span>
+                        <span class="btn-text">Generate Full Meeting Intelligence</span>
+                    </button>
+                    <button type="button" class="btn-secondary" id="transcribeOnlyBtn" disabled>
+                        <span class="btn-icon">🎙️</span>
+                        <span class="btn-text">Transcribe Audio Only</span>
+                    </button>
+                </div>
+
+                <!-- 7-STEP VISUAL PIPELINE STEPPER -->
+                <div class="pipeline-stepper hidden" id="pipelineStepper">
+                    <div class="stepper-header">
+                        <span class="stepper-title">Automated Pipeline Status</span>
+                        <span class="stepper-status-text" id="stepperGlobalStatus">Processing...</span>
+                    </div>
+                    <div class="steps-list">
+                        <div class="step-item" id="step1">
+                            <div class="step-indicator"><span class="step-num">1</span></div>
+                            <div class="step-info">
+                                <span class="step-name">1. Uploading Recording</span>
+                                <span class="step-desc">Validating format, size & integrity</span>
+                            </div>
+                            <span class="step-badge" id="step1Badge">Pending</span>
+                        </div>
+                        <div class="step-item" id="step2">
+                            <div class="step-indicator"><span class="step-num">2</span></div>
+                            <div class="step-info">
+                                <span class="step-name">2. FFmpeg Audio Extraction</span>
+                                <span class="step-desc">Extracting 16kHz mono PCM stream</span>
+                            </div>
+                            <span class="step-badge" id="step2Badge">Waiting</span>
+                        </div>
+                        <div class="step-item" id="step3">
+                            <div class="step-indicator"><span class="step-num">3</span></div>
+                            <div class="step-info">
+                                <span class="step-name">3. Whisper Speech-to-Text</span>
+                                <span class="step-desc">Neural multi-lingual transcription</span>
+                            </div>
+                            <span class="step-badge" id="step3Badge">Waiting</span>
+                        </div>
+                        <div class="step-item" id="step4">
+                            <div class="step-indicator"><span class="step-num">4</span></div>
+                            <div class="step-info">
+                                <span class="step-name">4. Transcript Validation</span>
+                                <span class="step-desc">Checking completeness & semantics</span>
+                            </div>
+                            <span class="step-badge" id="step4Badge">Waiting</span>
+                        </div>
+                        <div class="step-item" id="step5">
+                            <div class="step-indicator"><span class="step-num">5</span></div>
+                            <div class="step-info">
+                                <span class="step-name">5. AI Meeting Intelligence</span>
+                                <span class="step-desc">Extracting summary, decisions & actions</span>
+                            </div>
+                            <span class="step-badge" id="step5Badge">Waiting</span>
+                        </div>
+                        <div class="step-item" id="step6">
+                            <div class="step-indicator"><span class="step-num">6</span></div>
+                            <div class="step-info">
+                                <span class="step-name">6. Database Persistence</span>
+                                <span class="step-desc">Saving structured schema to SQLite</span>
+                            </div>
+                            <span class="step-badge" id="step6Badge">Waiting</span>
+                        </div>
+                        <div class="step-item" id="step7">
+                            <div class="step-indicator"><span class="step-num">7</span></div>
+                            <div class="step-info">
+                                <span class="step-name">7. Pipeline Completed</span>
+                                <span class="step-desc">Delivered to dashboard</span>
+                            </div>
+                            <span class="step-badge" id="step7Badge">Waiting</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ERROR ALERT BOX -->
+                <div class="alert-box alert-error hidden" id="errorAlert">
+                    <span class="alert-icon">⚠️</span>
+                    <div class="alert-text">
+                        <strong>Processing Error</strong>
+                        <p id="errorMessage">Something went wrong during processing.</p>
+                    </div>
+                    <button type="button" class="alert-close-btn" id="errorAlertClose">&times;</button>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: DASHBOARD (INTELLIGENCE & TRANSCRIPT) -->
+            <section class="card results-card">
+                <div class="card-header results-header">
+                    <div class="header-icon-box results-icon-box">🧠</div>
+                    <div class="results-header-title">
+                        <h2>Meeting Intelligence & Transcripts</h2>
+                        <p class="section-desc">AI-generated executive summary, decisions, action items, and timestamped transcripts</p>
+                    </div>
+                    <!-- ACTION TOOLS -->
+                    <div class="results-toolbar hidden" id="resultsToolbar">
+                        <button type="button" class="btn-tool" id="copyAllBtn" title="Copy text to clipboard">
+                            <span>📋</span> Copy Intelligence
+                        </button>
+                        <div class="dropdown-container">
+                            <button type="button" class="btn-tool btn-tool-primary" id="exportDropdownBtn">
+                                <span>📥</span> Export Results ▾
+                            </button>
+                            <div class="dropdown-menu hidden" id="exportMenu">
+                                <button type="button" class="dropdown-item" id="downloadMarkdownBtn">
+                                    <span>📝</span> Markdown Report (.md)
+                                </button>
+                                <button type="button" class="dropdown-item" id="downloadJsonBtn">
+                                    <span>📦</span> Intelligence JSON (.json)
+                                </button>
+                                <button type="button" class="dropdown-item" id="downloadTxtBtn">
+                                    <span>📄</span> Plain Transcript (.txt)
+                                </button>
+                                <button type="button" class="dropdown-item" id="downloadSrtBtn">
+                                    <span>🎬</span> Subtitle File (.srt)
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-tool btn-reset" id="resetBtn" title="Process new recording">
+                            <span>🔄</span> New Session
+                        </button>
+                    </div>
+                </div>
+
+                <!-- METRICS SUMMARY BAR -->
+                <div class="metrics-grid hidden" id="metricsGrid">
+                    <div class="metric-card">
+                        <span class="metric-title">Audio Duration</span>
+                        <span class="metric-value" id="metricDuration">--:--</span>
+                        <span class="metric-sub" id="metricDurationSec">0s audio</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-title">Total Words</span>
+                        <span class="metric-value" id="metricWords">0</span>
+                        <span class="metric-sub">Spoken Speech</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-title">Processing Time</span>
+                        <span class="metric-value highlight-val" id="metricTime">0.0s</span>
+                        <span class="metric-sub" id="metricSpeedRatio">Speed optimized</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-title">Intelligence ID</span>
+                        <span class="metric-value" id="metricMeetingId">#--</span>
+                        <span class="metric-sub" id="metricEngine">Whisper + LLM</span>
+                    </div>
+                </div>
+
+                <!-- MAIN VIEW TABS -->
+                <div class="view-tabs hidden" id="viewTabs">
+                    <button type="button" class="tab-btn active" data-tab="intelligence">
+                        <span>🧠</span> Meeting Intelligence
+                    </button>
+                    <button type="button" class="tab-btn" data-tab="segments">
+                        <span>⏱️</span> Timestamped Segments (<span id="tabSegmentCount">0</span>)
+                    </button>
+                    <button type="button" class="tab-btn" data-tab="fulltext">
+                        <span>📄</span> Full Transcript
+                    </button>
+                    <button type="button" class="tab-btn" data-tab="srt">
+                        <span>🎬</span> Subtitles (SRT)
+                    </button>
+                </div>
+
+                <!-- SEARCH & FILTER BAR (Active on transcript tabs) -->
+                <div class="search-filter-bar hidden" id="searchFilterBar">
+                    <div class="search-input-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="transcriptSearchInput" placeholder="Search keywords in transcript (e.g., 'Artificial Intelligence', 'Deadline')...">
+                        <button type="button" class="search-clear-btn hidden" id="searchClearBtn">&times;</button>
+                    </div>
+                    <span class="match-count-badge hidden" id="matchCountBadge">0 matches</span>
+                </div>
+
+                <!-- CONTENT CONTAINER -->
+                <div class="content-wrapper">
+                    <!-- EMPTY PLACEHOLDER -->
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon-box">🎙️</div>
+                        <h3>No Recording Processed Yet</h3>
+                        <p>Upload a meeting audio/video file or click <strong>Load Demo Recording</strong> to run the full Milestone 1 & 2 pipeline.</p>
+                        <div class="feature-pills">
+                            <span class="pill">⚡ FFmpeg Audio Processing</span>
+                            <span class="pill">🎙️ Whisper Speech-to-Text</span>
+                            <span class="pill">📝 Executive Summarization</span>
+                            <span class="pill">🎯 Action Item Extraction</span>
+                            <span class="pill">👥 Participant Mapping</span>
+                            <span class="pill">💾 SQLite Relational Database</span>
+                        </div>
+                    </div>
+
+                    <!-- TAB 1: STRUCTURED MEETING INTELLIGENCE VIEW -->
+                    <div class="tab-panel active hidden" id="tabPanelIntelligence">
+                        <div class="intelligence-dashboard" id="intelligenceDashboard">
+                            <!-- EXECUTIVE SUMMARY CARD -->
+                            <div class="intel-card">
+                                <div class="intel-card-header">
+                                    <span class="intel-icon">📝</span>
+                                    <h3>Executive Summary</h3>
+                                </div>
+                                <div class="intel-card-body">
+                                    <p class="summary-text" id="intelSummaryText">--</p>
+                                </div>
+                            </div>
+
+                            <!-- 2-COLUMN GRID: KEY POINTS & DECISIONS -->
+                            <div class="intel-two-col">
+                                <!-- KEY POINTS -->
+                                <div class="intel-card">
+                                    <div class="intel-card-header">
+                                        <span class="intel-icon">💡</span>
+                                        <h3>Key Discussion Points</h3>
+                                    </div>
+                                    <div class="intel-card-body">
+                                        <ul class="bullet-list" id="intelKeyPointsList"></ul>
+                                    </div>
+                                </div>
+
+                                <!-- KEY DECISIONS -->
+                                <div class="intel-card">
+                                    <div class="intel-card-header">
+                                        <span class="intel-icon">⚖️</span>
+                                        <h3>Key Decisions</h3>
+                                    </div>
+                                    <div class="intel-card-body">
+                                        <ul class="bullet-list decision-list" id="intelDecisionsList"></ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ACTION ITEMS TABLE -->
+                            <div class="intel-card">
+                                <div class="intel-card-header">
+                                    <span class="intel-icon">📋</span>
+                                    <div class="intel-header-title-box">
+                                        <h3>Action Items & Deliverables</h3>
+                                        <span class="badge-count" id="actionItemsCount">0 tasks</span>
+                                    </div>
+                                </div>
+                                <div class="intel-card-body table-responsive">
+                                    <table class="action-items-table" id="actionItemsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Task Description</th>
+                                                <th>Assignee</th>
+                                                <th>Deadline</th>
+                                                <th>Priority</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="actionItemsTbody">
+                                            <!-- Dynamically injected -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- 2-COLUMN GRID: PARTICIPANTS & PRIORITIES/DEADLINES -->
+                            <div class="intel-two-col">
+                                <!-- PARTICIPANTS & RESPONSIBILITIES -->
+                                <div class="intel-card">
+                                    <div class="intel-card-header">
+                                        <span class="intel-icon">👥</span>
+                                        <h3>Participants & Responsibilities</h3>
+                                    </div>
+                                    <div class="intel-card-body">
+                                        <div class="participants-grid" id="participantsGrid"></div>
+                                    </div>
+                                </div>
+
+                                <!-- DEADLINES & PRIORITIES -->
+                                <div class="intel-card">
+                                    <div class="intel-card-header">
+                                        <span class="intel-icon">🎯</span>
+                                        <h3>Deadlines & Focus Priorities</h3>
+                                    </div>
+                                    <div class="intel-card-body">
+                                        <div class="tags-group">
+                                            <span class="tag-title">Deadlines:</span>
+                                            <div class="tag-container" id="deadlinesTags"></div>
+                                        </div>
+                                        <div class="tags-group" style="margin-top: 1rem;">
+                                            <span class="tag-title">Priorities:</span>
+                                            <div class="tag-container" id="prioritiesTags"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: TIMESTAMPED SEGMENTS VIEW -->
+                    <div class="tab-panel hidden" id="tabPanelSegments">
+                        <div class="segments-list" id="segmentsList">
+                            <!-- Dynamically injected -->
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: FULL TEXT VIEW -->
+                    <div class="tab-panel hidden" id="tabPanelFullText">
+                        <div class="full-text-box" id="fullTextBox"></div>
+                    </div>
+
+                    <!-- TAB 4: SRT PREVIEW -->
+                    <div class="tab-panel hidden" id="tabPanelSrt">
+                        <pre class="srt-code-block" id="srtCodeBlock"></pre>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <div class="footer-inner">
+                <p><strong>Infosys Springboard AI-Powered Career Intelligence Platform</strong> &bull; Milestones 1 & 2 Integrated Pipeline</p>
+                <p class="footer-tech">Technologies: Python Flask &bull; FFmpeg &bull; OpenAI Whisper &bull; LLM Structured Intelligence &bull; SQLite Relational DB &bull; Vanilla HTML/CSS/JS</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-notification hidden" id="toast">
+        <span class="toast-icon">✨</span>
+        <span class="toast-msg" id="toastMsg">Operation successful!</span>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
