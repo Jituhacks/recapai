@@ -1,4 +1,4 @@
-﻿# ⚡ Infosys Springboard — AI-Powered Meeting Intelligence Platform
+﻿# ⚡ MeetIntel-AI
 ### Milestones 1 & 2: Complete Audio Processing & Meeting Intelligence Pipeline
 
 An end-to-end automated platform that transforms raw audio/video meeting recordings into structured, actionable business intelligence with sub-second retrieval, timestamp-synchronized playback, and relational database persistence.
