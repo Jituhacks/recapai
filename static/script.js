@@ -579,9 +579,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // --------------------------------------------------------------------------
     copyAllBtn.addEventListener("click", () => {
         if (!currentPipelineResult) return;
-        const text = currentPipelineResult.meeting_intelligence ? 
-                     JSON.stringify(currentPipelineResult.meeting_intelligence, null, 2) : 
-                     (currentPipelineResult.transcript || "");
+        const text = currentPipelineResult.meeting_intelligence ?
+            JSON.stringify(currentPipelineResult.meeting_intelligence, null, 2) :
+            (currentPipelineResult.transcript || "");
         navigator.clipboard.writeText(text).then(() => {
             showToast("Copied to clipboard!");
         });
